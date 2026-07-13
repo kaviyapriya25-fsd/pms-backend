@@ -1,46 +1,47 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import com.example.demo.repository.TaskRepository;
+import com.example.demo.entity.Employee;
+import com.example.demo.service.EmployeeService;
 
 @RestController
-@RequestMapping("/employee")
+@RequestMapping("/employees")
+@CrossOrigin(origins = "http://localhost:5173")
 public class EmployeeController {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    private final EmployeeService service;
 
-    @GetMapping("/{name}")
-    public Map<String, Object> getEmployeePerformance(
-            @PathVariable String name) {
-
-        Map<String, Object> data = new HashMap<>();
-
-        data.put("employee", name);
-
-        data.put("totalTasks",
-                taskRepository.countByAssignedTo(name));
-
-        data.put("completedTasks",
-                taskRepository.countByAssignedToAndStatus(
-                        name,
-                        "COMPLETED"));
-
-        data.put("pendingTasks",
-                taskRepository.countByAssignedToAndStatus(
-                        name,
-                        "PENDING"));
-
-        data.put("inProgressTasks",
-                taskRepository.countByAssignedToAndStatus(
-                        name,
-                        "IN_PROGRESS"));
-
-        return data;
+    public EmployeeController(EmployeeService service) {
+        this.service = service;
     }
+
+    @GetMapping
+    public List<Employee> getAllEmployees() {
+        return service.getAll();
+    }
+
+    @PostMapping
+    public Employee addEmployee(@RequestBody Employee employee) {
+        return service.save(employee);
+    }
+
+    @PutMapping("/{id}")
+    public Employee updateEmployee(
+            @PathVariable Integer id,
+            @RequestBody Employee employee) {
+
+        return service.update(id, employee);
+
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteEmployee(@PathVariable Integer id) {
+
+        service.delete(id);
+
+    }
+
 }

@@ -3,46 +3,27 @@ package com.example.demo.controller;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.demo.repository.ProjectRepository;
-import com.example.demo.repository.TaskRepository;
-import com.example.demo.repository.UserRepository;
-
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 public class DashboardController {
 
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private ProjectRepository projectRepository;
-
-    @Autowired
-    private TaskRepository taskRepository;
-
     @GetMapping("/dashboard")
-    public Map<String, Long> getDashboard() {
+    public Map<String, Object> dashboard() {
 
-        Map<String, Long> data = new HashMap<>();
+        Map<String, Object> data = new HashMap<>();
 
-        data.put("totalUsers", userRepository.count());
-
-        data.put("totalProjects", projectRepository.count());
-
-        data.put("totalTasks", taskRepository.count());
-
-        data.put("completedTasks",
-                taskRepository.countByStatus("COMPLETED"));
-
-        data.put("pendingTasks",
-                taskRepository.countByStatus("PENDING"));
-
-        data.put("inProgressTasks",
-                taskRepository.countByStatus("IN_PROGRESS"));
+        data.put("employees", 25);
+        data.put("teamLeaders", 5);
+        data.put("projects", 8);
+        data.put("tasks", 96);
+        data.put("completedTasks", 74);
+        data.put("pendingTasks", 22);
 
         return data;
     }
+
 }

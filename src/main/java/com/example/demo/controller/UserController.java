@@ -8,7 +8,7 @@ import com.example.demo.dto.LoginRequest;
 import com.example.demo.dto.LoginResponse;
 import com.example.demo.entity.User;
 import com.example.demo.repository.UserRepository;
-import com.example.demo.security.JwtService;
+import com.example.demo.service.AuthService;
 import com.example.demo.service.UserService;
 
 @RestController
@@ -18,16 +18,16 @@ public class UserController {
 
     private final UserRepository userRepository;
     private final UserService userService;
-    private final JwtService jwtService;
+    private final AuthService authService;
 
     public UserController(
             UserRepository userRepository,
             UserService userService,
-            JwtService jwtService) {
+            AuthService authService) {
 
         this.userRepository = userRepository;
         this.userService = userService;
-        this.jwtService = jwtService;
+        this.authService = authService;
     }
 
     // ===========================
@@ -54,35 +54,6 @@ public class UserController {
 
     @PostMapping("/login")
     public LoginResponse login(@RequestBody LoginRequest request) {
-
-        User loggedUser = userService.login(
-                request.getEmail(),
-                request.getPassword());
-
-        if (loggedUser != null) {
-
-            String token = jwtService.generateToken(
-                    loggedUser.getEmail());
-
-            return new LoginResponse(
-                    true,
-                    "Login Successful",
-                    token,
-                    loggedUser.getId(),
-                    null, // companyId (we'll connect later)
-                    loggedUser.getName(),
-                    loggedUser.getRole()
-            );
-        }
-
-        return new LoginResponse(
-                false,
-                "Invalid Email or Password",
-                null,
-                null,
-                null,
-                null,
-                null
-        );
+        return authService.login(request);
     }
 }

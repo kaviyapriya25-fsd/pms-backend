@@ -28,6 +28,9 @@ public class Company {
     @Column(length = 1000)
     private String address;
 
+    @Column(columnDefinition = "LONGTEXT")
+    private String logo;
+
     private LocalDateTime createdAt;
 
     @PrePersist
@@ -100,6 +103,14 @@ public class Company {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     public LocalDateTime getCreatedAt() {

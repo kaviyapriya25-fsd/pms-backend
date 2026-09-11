@@ -27,8 +27,21 @@ public class User {
     @Column(name = "company_id")
     private Integer companyId;
 
+    private String phone;
+
+    private String department;
+
+    private String designation;
+
+    private String project;
+
     @Column(nullable = false)
     private String status = "ACTIVE";
+
+    private String otp;
+
+    @Column(name = "otp_expiry")
+    private LocalDateTime otpExpiry;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -41,9 +54,9 @@ public class User {
         createdAt = LocalDateTime.now();
     }
 
-    // =============================
+    // ===========================
     // Getters & Setters
-    // =============================
+    // ===========================
 
     public Integer getId() {
         return id;
@@ -93,12 +106,60 @@ public class User {
         this.companyId = companyId;
     }
 
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(String department) {
+        this.department = department;
+    }
+
+    public String getDesignation() {
+        return designation;
+    }
+
+    public void setDesignation(String designation) {
+        this.designation = designation;
+    }
+
+    public String getProject() {
+        return project;
+    }
+
+    public void setProject(String project) {
+        this.project = project;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getOtp() {
+        return otp;
+    }
+
+    public void setOtp(String otp) {
+        this.otp = otp;
+    }
+
+    public LocalDateTime getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(LocalDateTime otpExpiry) {
+        this.otpExpiry = otpExpiry;
     }
 
     public LocalDateTime getCreatedAt() {

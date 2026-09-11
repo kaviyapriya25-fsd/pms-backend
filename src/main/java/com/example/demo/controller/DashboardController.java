@@ -1,29 +1,46 @@
 package com.example.demo.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.example.demo.dto.DashboardResponse;
+import com.example.demo.dto.LeaderDashboardResponse;
+import com.example.demo.security.SecurityUtil;
+import com.example.demo.service.DashboardService;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:5173")
 public class DashboardController {
 
+    private final DashboardService dashboardService;
+    private final SecurityUtil securityUtil;
+
+    public DashboardController(DashboardService dashboardService, SecurityUtil securityUtil) {
+        this.dashboardService = dashboardService;
+        this.securityUtil = securityUtil;
+    }
+
     @GetMapping("/dashboard")
-    public Map<String, Object> dashboard() {
+    public DashboardResponse dashboard(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestParam(required = false) Integer companyId) {
 
-        Map<String, Object> data = new HashMap<>();
+        Integer activeCompanyId = securityUtil.extractCompanyId(authHeader, companyId);
+        return dashboardService.getDashboard(activeCompanyId);
+    }
 
-        data.put("employees", 25);
-        data.put("teamLeaders", 5);
-        data.put("projects", 8);
-        data.put("tasks", 96);
-        data.put("completedTasks", 74);
-        data.put("pendingTasks", 22);
+    @GetMapping("/dashboard/leader")
+    public LeaderDashboardResponse getLeaderDashboard(
+            @RequestHeader(value = "Authorization", required = false) String authHeader,
+            @RequestParam(required = false) Integer companyId,
+            @RequestParam(required = false) String leaderEmail,
+            @RequestParam(required = false) String leaderName) {
 
-        return data;
+        Integer activeCompanyId = securityUtil.extractCompanyId(authHeader, companyId);
+        return dashboardService.getLeaderDashboard(activeCompanyId, leaderEmail, leaderName);
     }
 
 }

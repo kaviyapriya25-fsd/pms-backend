@@ -63,6 +63,12 @@ public class TaskService {
 
     public Task saveTask(Task task) {
 
+        if (task.getStartDate() != null && task.getDueDate() != null) {
+            if (task.getDueDate().isBefore(task.getStartDate())) {
+                throw new IllegalArgumentException("Task Due Date cannot be before Start Date.");
+            }
+        }
+
         if (task.getStatus() == null || task.getStatus().isBlank()) {
             task.setStatus("TODO");
         }
@@ -81,6 +87,12 @@ public class TaskService {
     }
 
     public Task updateTask(Integer id, Task task) {
+
+        if (task.getStartDate() != null && task.getDueDate() != null) {
+            if (task.getDueDate().isBefore(task.getStartDate())) {
+                throw new IllegalArgumentException("Task Due Date cannot be before Start Date.");
+            }
+        }
 
         Task existing = getTaskById(id);
 

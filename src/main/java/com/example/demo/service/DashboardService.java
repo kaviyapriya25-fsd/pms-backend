@@ -152,25 +152,36 @@ public class DashboardService {
                 .findFirst()
                 .orElse(null);
 
-        String assignedProjectName = leader != null && leader.getProject() != null ? leader.getProject() : "";
+        // Fetch ALL projects assigned to this leader
+        List<Project> allCompanyProjects = projectRepository.findByCompany_Id(companyId);
+        List<Project> myProjects = allCompanyProjects.stream()
+                .filter(p -> (leaderName != null && leaderName.equalsIgnoreCase(p.getLeader())) ||
+                             (leaderEmail != null && leaderEmail.equalsIgnoreCase(p.getLeader())) ||
+                             (leader != null && leader.getProject() != null && leader.getProject().equalsIgnoreCase(p.getProjectName())))
+                .collect(Collectors.toList());
 
-        if (!assignedProjectName.isBlank()) {
-            Project project = projectRepository.findByCompany_Id(companyId).stream()
-                    .filter(p -> assignedProjectName.equalsIgnoreCase(p.getProjectName()))
-                    .findFirst()
-                    .orElse(null);
+        List<LeaderDashboardResponse.ProjectSummary> projectSummaries = myProjects.stream()
+                .map(p -> new LeaderDashboardResponse.ProjectSummary(
+                        p.getId(),
+                        p.getProjectName(),
+                        p.getDescription(),
+                        p.getStatus(),
+                        p.getPriority(),
+                        p.getStartDate() != null ? p.getStartDate().toString() : "",
+                        p.getEndDate() != null ? p.getEndDate().toString() : ""
+                ))
+                .collect(Collectors.toList());
+        response.setAssignedProjects(projectSummaries);
 
-            if (project != null) {
-                response.setAssignedProjectName(project.getProjectName());
-                response.setAssignedProjectStatus(project.getStatus());
-                response.setAssignedProjectStartDate(project.getStartDate() != null ? project.getStartDate().toString() : "");
-                response.setAssignedProjectEndDate(project.getEndDate() != null ? project.getEndDate().toString() : "");
-                response.setAssignedProjectDescription(project.getDescription());
-                response.setAssignedProjectPriority(project.getPriority());
-            } else {
-                response.setAssignedProjectName(assignedProjectName);
-                response.setAssignedProjectStatus("ACTIVE");
-            }
+        // Primary / default project for legacy single-project fields:
+        Project primaryProject = !myProjects.isEmpty() ? myProjects.get(0) : null;
+        if (primaryProject != null) {
+            response.setAssignedProjectName(primaryProject.getProjectName());
+            response.setAssignedProjectStatus(primaryProject.getStatus());
+            response.setAssignedProjectStartDate(primaryProject.getStartDate() != null ? primaryProject.getStartDate().toString() : "");
+            response.setAssignedProjectEndDate(primaryProject.getEndDate() != null ? primaryProject.getEndDate().toString() : "");
+            response.setAssignedProjectDescription(primaryProject.getDescription());
+            response.setAssignedProjectPriority(primaryProject.getPriority());
         } else {
             response.setAssignedProjectName("Unassigned");
             response.setAssignedProjectStatus("PENDING");
@@ -185,12 +196,16 @@ public class DashboardService {
 
         response.setTeamMembersCount(myTeam.size());
 
-        // 3. Fetch Tasks created by or under this Team Leader / Project
+        // 3. Fetch Tasks created by or under this Team Leader / Projects
+        java.util.Set<String> myProjectNames = myProjects.stream()
+                .map(p -> p.getProjectName() != null ? p.getProjectName().trim().toLowerCase() : "")
+                .collect(Collectors.toSet());
+
         List<Task> companyTasks = taskRepository.findByCompany_Id(companyId);
         List<Task> myTasks = companyTasks.stream()
                 .filter(t -> (leaderName != null && leaderName.equalsIgnoreCase(t.getTeamLeader())) ||
                              (leaderEmail != null && leaderEmail.equalsIgnoreCase(t.getTeamLeader())) ||
-                             (!assignedProjectName.isBlank() && assignedProjectName.equalsIgnoreCase(t.getProject())))
+                             (t.getProject() != null && myProjectNames.contains(t.getProject().trim().toLowerCase())))
                 .collect(Collectors.toList());
 
         int totalTasks = myTasks.size();

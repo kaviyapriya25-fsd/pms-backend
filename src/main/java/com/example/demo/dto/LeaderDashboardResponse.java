@@ -22,6 +22,43 @@ public class LeaderDashboardResponse {
     private List<EmployeeSummary> teamMembers;
     private List<ActivityDTO> recentActivities;
     private List<NotificationDTO> notifications;
+    private List<ProjectSummary> assignedProjects;
+
+    public static class ProjectSummary {
+        private Integer id;
+        private String projectName;
+        private String description;
+        private String status;
+        private String priority;
+        private String startDate;
+        private String endDate;
+
+        public ProjectSummary() {}
+        public ProjectSummary(Integer id, String projectName, String description, String status, String priority, String startDate, String endDate) {
+            this.id = id;
+            this.projectName = projectName;
+            this.description = description;
+            this.status = status;
+            this.priority = priority;
+            this.startDate = startDate;
+            this.endDate = endDate;
+        }
+
+        public Integer getId() { return id; }
+        public void setId(Integer id) { this.id = id; }
+        public String getProjectName() { return projectName; }
+        public void setProjectName(String projectName) { this.projectName = projectName; }
+        public String getDescription() { return description; }
+        public void setDescription(String description) { this.description = description; }
+        public String getStatus() { return status; }
+        public void setStatus(String status) { this.status = status; }
+        public String getPriority() { return priority; }
+        public void setPriority(String priority) { this.priority = priority; }
+        public String getStartDate() { return startDate; }
+        public void setStartDate(String startDate) { this.startDate = startDate; }
+        public String getEndDate() { return endDate; }
+        public void setEndDate(String endDate) { this.endDate = endDate; }
+    }
 
     public static class EmployeeSummary {
         private Integer id;
@@ -120,4 +157,7 @@ public class LeaderDashboardResponse {
 
     public List<NotificationDTO> getNotifications() { return notifications; }
     public void setNotifications(List<NotificationDTO> notifications) { this.notifications = notifications; }
+
+    public List<ProjectSummary> getAssignedProjects() { return assignedProjects; }
+    public void setAssignedProjects(List<ProjectSummary> assignedProjects) { this.assignedProjects = assignedProjects; }
 }

@@ -134,6 +134,12 @@ public class ProjectService {
 
     public Project saveProject(Project project) {
 
+        if (project.getStartDate() != null && project.getEndDate() != null) {
+            if (project.getEndDate().isBefore(project.getStartDate())) {
+                throw new IllegalArgumentException("Target End Date cannot be before Start Date.");
+            }
+        }
+
         Project saved = projectRepository.save(project);
         log.info("Successfully saved new project: {}", saved.getProjectName());
 
@@ -152,6 +158,12 @@ public class ProjectService {
     // ======================
 
     public Project updateProject(Integer id, Project project) {
+
+        if (project.getStartDate() != null && project.getEndDate() != null) {
+            if (project.getEndDate().isBefore(project.getStartDate())) {
+                throw new IllegalArgumentException("Target End Date cannot be before Start Date.");
+            }
+        }
 
         Project existing = getProjectById(id);
 

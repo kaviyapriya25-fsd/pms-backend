@@ -91,7 +91,7 @@ public class AuthService {
         System.out.println("=== REGISTRATION OTP for " + email + " is: " + otp + " ===");
 
         try {
-            emailService.sendOtpEmail(email, "Company Admin", otp, 2);
+            emailService.sendRegistrationOtpEmail(email, "Company Admin", otp, 2);
         } catch (Exception e) {
             System.err.println("[AuthService] Registration OTP email error: " + e.getMessage());
         }

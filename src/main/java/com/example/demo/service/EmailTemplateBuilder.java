@@ -192,9 +192,28 @@ public class EmailTemplateBuilder {
                 + "<div class=\"otp-box\">"
                 + "  <div style=\"font-size: 13px; color: #475569; font-weight: 600; text-transform: uppercase;\">Your Verification Code</div>"
                 + "  <div class=\"otp-code\">" + otpCode + "</div>"
-                + "  <div style=\"font-size: 13px; color: #dc2626; font-weight: 600; margin-top: 6px;\">⏰ Valid for " + expiryMinutes + " minutes only</div>"
+                + "  <div style=\"font-size: 14px; color: #dc2626; font-weight: 700; margin-top: 6px;\">⏰ Valid for " + expiryMinutes + " minutes only (Strict Expiry)</div>"
                 + "</div>"
+                + "<p style=\"color: #b91c1c; font-weight: 600; font-size: 13px;\">⚠️ Note: This OTP is strictly valid for " + expiryMinutes + " minutes. After " + expiryMinutes + " minutes, it will expire and cannot be used.</p>"
                 + "<p>If you did not request a password reset, please ignore this email or contact system administration immediately.</p>"
+                + getFooterHtml();
+    }
+
+    // 2b. COMPANY REGISTRATION ADMIN EMAIL VERIFICATION OTP
+    public String buildRegistrationOtpEmail(String userName, String otpCode, int expiryMinutes) {
+        String safeName = (userName != null && !userName.isBlank()) ? userName : "Administrator";
+
+        return getHeaderHtml("Company Registration Verification")
+                + "<div class=\"greeting\">Hello " + safeName + ", 👋</div>"
+                + "<p>Thank you for initiating company registration on Project Management System.</p>"
+                + "<p>Please verify your administrator email address using the following 6-digit OTP code:</p>"
+                + "<div class=\"otp-box\">"
+                + "  <div style=\"font-size: 13px; color: #475569; font-weight: 600; text-transform: uppercase;\">Admin Verification OTP</div>"
+                + "  <div class=\"otp-code\">" + otpCode + "</div>"
+                + "  <div style=\"font-size: 14px; color: #dc2626; font-weight: 700; margin-top: 6px;\">⏰ Valid for " + expiryMinutes + " minutes only (Strict Expiry)</div>"
+                + "</div>"
+                + "<p style=\"color: #b91c1c; font-weight: 600; font-size: 13px;\">⚠️ Note: This OTP will automatically expire after " + expiryMinutes + " minutes. If expired, please request a fresh OTP from the registration page.</p>"
+                + "<p>If you did not initiate this registration, please disregard this email.</p>"
                 + getFooterHtml();
     }
 

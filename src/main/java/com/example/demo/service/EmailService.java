@@ -66,8 +66,14 @@ public class EmailService {
     }
 
     public void sendOtpEmail(String toEmail, String userName, String otpCode, int expiryMinutes) {
-        String subject = "Your Password Reset OTP Code - Project Management System";
+        String subject = "Your Password Reset OTP Code (Valid for " + expiryMinutes + " Mins) - Project Management System";
         String html = templateBuilder.buildOtpEmail(userName, otpCode, expiryMinutes);
+        sendHtmlEmail(toEmail, subject, html);
+    }
+
+    public void sendRegistrationOtpEmail(String toEmail, String userName, String otpCode, int expiryMinutes) {
+        String subject = "Verify Admin Email - Registration OTP Code (Valid for " + expiryMinutes + " Mins) | Project Management System";
+        String html = templateBuilder.buildRegistrationOtpEmail(userName, otpCode, expiryMinutes);
         sendHtmlEmail(toEmail, subject, html);
     }
 

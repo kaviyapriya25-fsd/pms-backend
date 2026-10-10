@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 @Entity
@@ -26,6 +27,7 @@ public class Notification {
 
     private String time;
 
+    @JsonProperty("read")
     @Column(name = "is_read")
     private boolean isRead;
 
@@ -95,6 +97,7 @@ public class Notification {
         this.time = time;
     }
 
+    @JsonProperty("read")
     public boolean isRead() {
         return isRead;
     }
